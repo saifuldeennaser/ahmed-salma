@@ -64,6 +64,17 @@
                 <label class="reply-field-label">Name
                     <input type="text" name="name" id="reply-name" required class="reply-input" placeholder="Your name">
                 </label>
+                <div class="reply-side-container">
+                    <span class="toggle-title">You are joining from</span>
+                    <div class="reply-side-buttons">
+                        <button type="button" class="reply-side-btn active" id="side-groom" data-side="groom">
+                            🤵 Groom's Side
+                        </button>
+                        <button type="button" class="reply-side-btn" id="side-bride" data-side="bride">
+                            👰 Bride's Side
+                        </button>
+                    </div>
+                </div>
                 <div class="reply-toggle-container">
                     <span class="toggle-title">Will you attend?</span>
                     <label class="attendance-switch">
@@ -81,6 +92,9 @@
             <p>Please open this invitation on mobile for the best viewing experience.</p>
         </div>
     </div>
+    <!-- Background Music -->
+    <audio id="bg-music" src="audio/mm.mp3" loop preload="auto"></audio>
+
     <script src="config.js" defer></script>
     <script src="script.js" defer></script>
 </body>

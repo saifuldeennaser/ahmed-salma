@@ -18,6 +18,9 @@ const qs = sel => document.querySelector(sel);
 const openInvitation = $('open-invitation');
 if (openInvitation) {
     openInvitation.addEventListener('click', () => {
+        // User gesture here — start music before navigating
+        const audio = document.getElementById('bg-music');
+        if (audio) audio.play().catch(() => {});
         window.location.href = 'invitation.html';
     }, { passive: true });
 }
@@ -96,6 +99,21 @@ function setupReplyModal() {
     const successMsg     = $('reply-success-message');
     const attendCB       = $('reply-attendance');
     const attendLabel    = $('attendance-label');
+    const sideGroomBtn   = $('side-groom');
+    const sideBrideBtn   = $('side-bride');
+
+    // Track selected side (default: groom)
+    let selectedSide = 'groom';
+
+    if (sideGroomBtn && sideBrideBtn) {
+        [sideGroomBtn, sideBrideBtn].forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectedSide = btn.dataset.side;
+                sideGroomBtn.classList.toggle('active', selectedSide === 'groom');
+                sideBrideBtn.classList.toggle('active', selectedSide === 'bride');
+            }, { passive: true });
+        });
+    }
 
     // Toggle label text
     if (attendCB && attendLabel) {
@@ -113,6 +131,10 @@ function setupReplyModal() {
     function openModal() {
         modalOverlay.classList.add('active');
         document.body.classList.add('modal-open');
+        // Reset side to groom
+        selectedSide = 'groom';
+        if (sideGroomBtn) sideGroomBtn.classList.add('active');
+        if (sideBrideBtn) sideBrideBtn.classList.remove('active');
         if (attendCB) {
             attendCB.checked = true;
             if (attendLabel) {
@@ -146,8 +168,16 @@ function setupReplyModal() {
         const isAttending = attendCB ? attendCB.checked : true;
         if (!name) return;
 
+        // Find the submit button and disable it to prevent double-submits
+        const submitBtn = replyForm.querySelector('[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending…';
+        }
+
         const replyData = {
             name,
+            side: selectedSide === 'groom' ? "Groom's Side" : "Bride's Side",
             response: isAttending ? 'Yes, attending' : 'No, not attending',
             submittedAt: new Date().toISOString()
         };
@@ -177,6 +207,11 @@ function setupReplyModal() {
             replyForm.hidden = true;
             if (successMsg) successMsg.hidden = false;
         } catch (err) {
+            // Re-enable button so the user can try again
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Reply';
+            }
             alert('Unable to save your response right now. Please try again later.');
             console.error(err);
         }
@@ -233,6 +268,25 @@ function observeAnimations() {
     targets.forEach(el => io.observe(el));
 }
 
+// ── Background Music ─────────────────────────────────────────
+// Browsers require a real user gesture before playing audio.
+// On index.html the envelope tap is the gesture.
+// On invitation.html we wait for the first tap anywhere.
+function initBackgroundMusic() {
+    const audio = document.getElementById('bg-music');
+    if (!audio) return;
+
+    audio.volume = 0.5;
+
+    // Try immediately (works if a gesture already happened on this page)
+    audio.play().catch(() => {
+        // Not yet — wait silently for the first interaction
+        const start = () => audio.play().catch(() => {});
+        document.addEventListener('touchstart', start, { once: true, passive: true });
+        document.addEventListener('click',      start, { once: true, passive: true });
+    });
+}
+
 // ── Boot ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     enforceMobileOnly();
@@ -240,4 +294,5 @@ document.addEventListener('DOMContentLoaded', () => {
     startCountdown();
     setupReplyModal();
     observeAnimations();
+    initBackgroundMusic(); // handles invitation.html (no splash screen)
 }, { once: true });

@@ -3,97 +3,525 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Replies</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#4e1721">
+    <title>Admin — Ahmed &amp; Salma</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&family=Inter:wght@400;500;600&display=swap">
     <style>
-        .admin-card {
-            width: min(92vw, 520px);
-            margin: 5rem auto 3rem;
-            padding: 2rem;
-            background: rgba(255,255,255,0.96);
-            border-radius: 28px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+        *, *::before, *::after {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        :root {
+            --maroon:   #4e1721;
+            --maroon-l: #7a2c38;
+            --gold:     #c9a84c;
+            --cream:    #f7f4ec;
+            --yes-bg:   #eaf7ef;
+            --yes-clr:  #1a7a42;
+            --no-bg:    #fdecea;
+            --no-clr:   #c0392b;
+            --groom-bg: #eef2ff;
+            --groom-clr:#3b4fc8;
+            --bride-bg: #fdf0f8;
+            --bride-clr:#b5338a;
+            --card-bg:  #fff;
+            --shadow:   0 8px 32px rgba(78,23,33,0.10);
+        }
+
+        body {
+            font-family: 'Inter', 'Georgia', serif;
+            background: var(--cream);
+            background-image:
+                radial-gradient(circle at 20% 15%, rgba(255,255,255,0.9), transparent 12%),
+                linear-gradient(180deg, rgba(255,255,255,0.7), rgba(245,240,230,0.95) 100%);
+            min-height: 100vh;
+            padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 2rem);
+            color: #2f1e20;
+        }
+
+        /* ── Header ─────────────────────────────────────── */
+        .admin-header {
             text-align: center;
+            margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
         }
-        .admin-card h1 {
-            margin-bottom: 1.2rem;
-            font-family: 'Georgia', serif;
-            font-size: 2rem;
+
+        .admin-header .crest {
+            font-family: 'Allura', cursive;
+            font-size: clamp(2.8rem, 10vw, 4rem);
+            color: var(--maroon);
+            line-height: 1;
+            margin-bottom: 0.3rem;
+        }
+
+        .admin-header h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.7rem, 2.5vw, 0.85rem);
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: rgba(78,23,33,0.6);
+            font-weight: 500;
+        }
+
+        /* ── Stat Cards ──────────────────────────────────── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(0.6rem, 2vw, 1rem);
+            max-width: 600px;
+            margin: 0 auto clamp(1.5rem, 4vw, 2rem);
+        }
+
+        .stats-grid-sides {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(0.6rem, 2vw, 1rem);
+            max-width: 600px;
+            margin: 0 auto clamp(1.5rem, 4vw, 2rem);
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: clamp(1rem, 3vw, 1.5rem) clamp(0.75rem, 2vw, 1rem);
+            text-align: center;
+            box-shadow: var(--shadow);
+            border-top: 4px solid transparent;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(78,23,33,0.15);
+        }
+
+        .stat-card.total  { border-color: var(--gold); }
+        .stat-card.yes    { border-color: var(--yes-clr); }
+        .stat-card.no     { border-color: var(--no-clr); }
+        .stat-card.groom  { border-color: var(--groom-clr); }
+        .stat-card.bride  { border-color: var(--bride-clr); }
+
+        .stat-number {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(2rem, 8vw, 3rem);
+            font-weight: 600;
+            line-height: 1;
+            margin-bottom: 0.35rem;
+        }
+
+        .stat-card.total  .stat-number { color: var(--maroon); }
+        .stat-card.yes    .stat-number { color: var(--yes-clr); }
+        .stat-card.no     .stat-number { color: var(--no-clr); }
+        .stat-card.groom  .stat-number { color: var(--groom-clr); }
+        .stat-card.bride  .stat-number { color: var(--bride-clr); }
+
+        .stat-label {
+            font-size: clamp(0.6rem, 2vw, 0.72rem);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(47,30,32,0.55);
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        /* ── Progress Bar ────────────────────────────────── */
+        .progress-card {
+            max-width: 600px;
+            margin: 0 auto clamp(1.5rem, 4vw, 2rem);
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: clamp(1rem, 3vw, 1.4rem) clamp(1rem, 3vw, 1.5rem);
+            box-shadow: var(--shadow);
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(47,30,32,0.6);
+            margin-bottom: 0.65rem;
+            font-weight: 500;
+        }
+
+        .progress-bar-track {
+            height: 12px;
+            border-radius: 999px;
+            background: #f0e8e9;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--yes-clr), #27ae60);
+            width: 0%;
+            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ── Refresh Button ──────────────────────────────── */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            max-width: 600px;
+            margin: 0 auto clamp(1.2rem, 3vw, 1.8rem);
+        }
+
+        .btn-refresh {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.4rem;
+            border-radius: 999px;
+            border: none;
+            background: var(--maroon);
+            color: #f7ece6;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
             letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(78,23,33,0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
         }
+
+        .btn-refresh:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(78,23,33,0.3);
+            background: var(--maroon-l);
+        }
+
+        .btn-refresh:active { transform: translateY(0); }
+
+        .btn-refresh.spinning .refresh-icon { animation: spin 0.7s linear infinite; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .refresh-icon { display: inline-block; font-size: 1rem; }
+
+        /* ── Last updated ────────────────────────────────── */
+        .last-updated {
+            text-align: center;
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            color: rgba(47,30,32,0.4);
+            margin-bottom: clamp(1.2rem, 3vw, 1.8rem);
+        }
+
+        /* ── Replies List ────────────────────────────────── */
+        .section-title {
+            max-width: 600px;
+            margin: 0 auto 0.8rem;
+            font-size: 0.72rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(78,23,33,0.55);
+            font-weight: 600;
+            padding-left: 0.2rem;
+        }
+
         .admin-list {
             display: grid;
-            gap: 1rem;
+            gap: 0.75rem;
+            max-width: 600px;
+            margin: 0 auto;
         }
+
         .reply-card {
-            padding: 1.3rem 1.4rem;
-            border-radius: 24px;
-            background: rgba(255,255,255,0.92);
-            box-shadow: 0 14px 30px rgba(0,0,0,0.12);
-            text-align: left;
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 1rem 1.2rem;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 0.5rem;
+            border-left: 5px solid transparent;
+            transition: transform 0.2s ease;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: cardIn 0.4s ease forwards;
         }
-        .reply-card strong {
-            display: block;
-            margin-bottom: 0.35rem;
-            letter-spacing: 0.14em;
+
+        .reply-card:hover { transform: translateY(-2px); }
+
+        .reply-card.attending     { border-color: var(--yes-clr); }
+        .reply-card.not-attending { border-color: var(--no-clr);  }
+
+        @keyframes cardIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reply-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #2f1e20;
+            letter-spacing: 0.02em;
+        }
+
+        .reply-time {
+            font-size: 0.72rem;
+            color: rgba(47,30,32,0.45);
+            margin-top: 0.2rem;
+            letter-spacing: 0.05em;
+        }
+
+        .reply-badge {
+            padding: 0.28rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: #513233;
+            white-space: nowrap;
         }
-        .reply-card div {
-            margin-bottom: 0.85rem;
-            font-family: 'Georgia', serif;
-            color: #382626;
-            line-height: 1.6;
+
+        .badge-yes {
+            background: var(--yes-bg);
+            color: var(--yes-clr);
         }
+
+        .badge-no {
+            background: var(--no-bg);
+            color: var(--no-clr);
+        }
+
+        .badge-groom {
+            background: var(--groom-bg);
+            color: var(--groom-clr);
+        }
+
+        .badge-bride {
+            background: var(--bride-bg);
+            color: var(--bride-clr);
+        }
+
+        .reply-card-badges {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.35rem;
+        }
+
+        /* ── Empty / Error states ────────────────────────── */
+        .state-msg {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: rgba(47,30,32,0.45);
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+        }
+
+        .state-msg .emoji { font-size: 2rem; display: block; margin-bottom: 0.6rem; }
     </style>
 </head>
-<body class="invite-page">
-    <div class="invite-container">
-        <div class="admin-card">
-            <h1>Admin Replies</h1>
-            <div id="admin-replies" class="admin-list">
-                <p>Loading replies…</p>
-            </div>
+<body>
+
+    <!-- Header -->
+    <div class="admin-header">
+        <div class="crest">A &amp; S</div>
+        <h1>Wedding Dashboard</h1>
+    </div>
+
+    <!-- Stat counters -->
+    <div class="stats-grid">
+        <div class="stat-card total">
+            <span class="stat-icon">💌</span>
+            <div class="stat-number" id="count-total">—</div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="stat-card yes">
+            <span class="stat-icon">✅</span>
+            <div class="stat-number" id="count-yes">—</div>
+            <div class="stat-label">Attending</div>
+        </div>
+        <div class="stat-card no">
+            <span class="stat-icon">❌</span>
+            <div class="stat-number" id="count-no">—</div>
+            <div class="stat-label">Not Coming</div>
         </div>
     </div>
-    <script src="config.js"></script>
+
+    <!-- Side counters -->
+    <div class="stats-grid-sides">
+        <div class="stat-card groom">
+            <span class="stat-icon">🤵</span>
+            <div class="stat-number" id="count-groom">—</div>
+            <div class="stat-label">Groom's Side</div>
+        </div>
+        <div class="stat-card bride">
+            <span class="stat-icon">👰</span>
+            <div class="stat-number" id="count-bride">—</div>
+            <div class="stat-label">Bride's Side</div>
+        </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-card">
+        <div class="progress-label">
+            <span>Attendance Rate</span>
+            <span id="progress-pct">0%</span>
+        </div>
+        <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button class="btn-refresh" id="btn-refresh" onclick="loadReplies()">
+            <span class="refresh-icon" id="refresh-icon">↻</span>
+            Refresh
+        </button>
+    </div>
+
+    <div class="last-updated" id="last-updated"></div>
+
+    <!-- Replies list -->
+    <div class="section-title">All Replies</div>
+    <div id="admin-replies" class="admin-list">
+        <div class="state-msg"><span class="emoji">⏳</span>Loading replies…</div>
+    </div>
+
+    <script src="config.js" defer></script>
     <script>
+        const $ = id => document.getElementById(id);
+
+        function isAttending(response) {
+            return (response || '').toLowerCase().includes('yes');
+        }
+
+        function formatTime(iso) {
+            if (!iso) return '—';
+            try {
+                return new Date(iso).toLocaleString('en-GB', {
+                    day: 'numeric', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+            } catch { return iso; }
+        }
+
+        function animateNumber(el, target) {
+            const duration = 800;
+            const start = performance.now();
+            const from = parseInt(el.textContent) || 0;
+            function step(now) {
+                const p = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - p, 3); // ease-out-cubic
+                el.textContent = Math.round(from + (target - from) * eased);
+                if (p < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        function updateStats(replies) {
+            const total = replies.length;
+            const yes   = replies.filter(r => isAttending(r.response)).length;
+            const no    = total - yes;
+            const pct   = total > 0 ? Math.round((yes / total) * 100) : 0;
+
+            const groomCount = replies.filter(r =>
+                (r.side || '').toLowerCase().includes('groom')
+            ).length;
+            const brideCount = replies.filter(r =>
+                (r.side || '').toLowerCase().includes('bride')
+            ).length;
+
+            animateNumber($('count-total'), total);
+            animateNumber($('count-yes'),   yes);
+            animateNumber($('count-no'),    no);
+            animateNumber($('count-groom'), groomCount);
+            animateNumber($('count-bride'), brideCount);
+
+            $('progress-pct').textContent = pct + '%';
+            // Small delay so the bar animates after paint
+            setTimeout(() => {
+                $('progress-bar').style.width = pct + '%';
+            }, 100);
+        }
+
+        function renderReplies(replies) {
+            const listEl = $('admin-replies');
+
+            if (!replies.length) {
+                listEl.innerHTML = '<div class="state-msg"><span class="emoji">💬</span>No replies yet.</div>';
+                return;
+            }
+
+            // Most recent first
+            const sorted = [...replies].sort((a, b) =>
+                new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0)
+            );
+
+            listEl.innerHTML = sorted.map((reply, i) => {
+                const attending = isAttending(reply.response);
+                const sideRaw   = (reply.side || '').toLowerCase();
+                const isGroom   = sideRaw.includes('groom');
+                const isBride   = sideRaw.includes('bride');
+                const sideBadge = isGroom
+                    ? `<span class="reply-badge badge-groom">🤵 Groom</span>`
+                    : isBride
+                    ? `<span class="reply-badge badge-bride">👰 Bride</span>`
+                    : '';
+                return `
+                <div class="reply-card ${attending ? 'attending' : 'not-attending'}"
+                     style="animation-delay:${i * 55}ms">
+                    <div>
+                        <div class="reply-name">${reply.name || '—'}</div>
+                        <div class="reply-time">${formatTime(reply.submittedAt)}</div>
+                    </div>
+                    <div class="reply-card-badges">
+                        <span class="reply-badge ${attending ? 'badge-yes' : 'badge-no'}">
+                            ${attending ? '✓ Coming' : '✗ Can\'t make it'}
+                        </span>
+                        ${sideBadge}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
         async function loadReplies() {
-            const listElement = document.getElementById('admin-replies');
+            const btn     = $('btn-refresh');
+            const listEl  = $('admin-replies');
+
+            btn.classList.add('spinning');
+            listEl.innerHTML = '<div class="state-msg"><span class="emoji">⏳</span>Loading…</div>';
+
             try {
                 let replies = [];
-                const hasUrl = typeof GOOGLE_SCRIPT_URL !== 'undefined' && 
-                                GOOGLE_SCRIPT_URL && 
-                                GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL';
+                const hasUrl = typeof GOOGLE_SCRIPT_URL !== 'undefined'
+                    && GOOGLE_SCRIPT_URL
+                    && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL';
 
                 if (!hasUrl) {
-                    console.warn('Google Sheets URL not configured. Loading replies from local storage.');
                     replies = JSON.parse(localStorage.getItem('wedding_replies') || '[]');
+                    await new Promise(r => setTimeout(r, 400)); // simulate load
                 } else {
-                    const response = await fetch(GOOGLE_SCRIPT_URL);
-                    if (!response.ok) {
-                        throw new Error('Failed to load replies');
-                    }
-                    replies = await response.json();
+                    const res = await fetch(GOOGLE_SCRIPT_URL + '?t=' + Date.now());
+                    if (!res.ok) throw new Error('Network error');
+                    replies = await res.json();
                 }
 
-                if (!Array.isArray(replies) || replies.length === 0) {
-                    listElement.innerHTML = '<p>No replies yet.</p>';
-                    return;
-                }
-                listElement.innerHTML = replies.map(reply => `
-                    <div class="reply-card">
-                        <strong>Name</strong>
-                        <div>${reply.name || '—'}</div>
-                        <strong>Response</strong>
-                        <div>${reply.response || '—'}</div>
-                        <strong>Submitted</strong>
-                        <div>${reply.submittedAt ? new Date(reply.submittedAt).toLocaleString() : '—'}</div>
-                    </div>
-                `).join('');
-            } catch (error) {
-                console.error(error);
-                listElement.innerHTML = '<p>Unable to load responses right now.</p>';
+                updateStats(replies);
+                renderReplies(replies);
+                $('last-updated').textContent =
+                    'Last updated: ' + new Date().toLocaleTimeString('en-GB');
+
+            } catch (err) {
+                console.error(err);
+                listEl.innerHTML = '<div class="state-msg"><span class="emoji">⚠️</span>Could not load replies. Check your internet and try again.</div>';
+            } finally {
+                btn.classList.remove('spinning');
             }
         }
 
