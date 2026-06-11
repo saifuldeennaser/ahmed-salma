@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Replies</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-card {
+            width: min(92vw, 520px);
+            margin: 5rem auto 3rem;
+            padding: 2rem;
+            background: rgba(255,255,255,0.96);
+            border-radius: 28px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+            text-align: center;
+        }
+        .admin-card h1 {
+            margin-bottom: 1.2rem;
+            font-family: 'Georgia', serif;
+            font-size: 2rem;
+            letter-spacing: 0.15em;
+        }
+        .admin-list {
+            display: grid;
+            gap: 1rem;
+        }
+        .reply-card {
+            padding: 1.3rem 1.4rem;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.92);
+            box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+            text-align: left;
+        }
+        .reply-card strong {
+            display: block;
+            margin-bottom: 0.35rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #513233;
+        }
+        .reply-card div {
+            margin-bottom: 0.85rem;
+            font-family: 'Georgia', serif;
+            color: #382626;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body class="invite-page">
+    <div class="invite-container">
+        <div class="admin-card">
+            <h1>Admin Replies</h1>
+            <div id="admin-replies" class="admin-list">
+                <p>Loading replies…</p>
+            </div>
+        </div>
+    </div>
+    <script src="config.js"></script>
+    <script>
+        async function loadReplies() {
+            const listElement = document.getElementById('admin-replies');
+            try {
+                let replies = [];
+                const hasUrl = typeof GOOGLE_SCRIPT_URL !== 'undefined' && 
+                                GOOGLE_SCRIPT_URL && 
+                                GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL';
+
+                if (!hasUrl) {
+                    console.warn('Google Sheets URL not configured. Loading replies from local storage.');
+                    replies = JSON.parse(localStorage.getItem('wedding_replies') || '[]');
+                } else {
+                    const response = await fetch(GOOGLE_SCRIPT_URL);
+                    if (!response.ok) {
+                        throw new Error('Failed to load replies');
+                    }
+                    replies = await response.json();
+                }
+
+                if (!Array.isArray(replies) || replies.length === 0) {
+                    listElement.innerHTML = '<p>No replies yet.</p>';
+                    return;
+                }
+                listElement.innerHTML = replies.map(reply => `
+                    <div class="reply-card">
+                        <strong>Name</strong>
+                        <div>${reply.name || '—'}</div>
+                        <strong>Response</strong>
+                        <div>${reply.response || '—'}</div>
+                        <strong>Submitted</strong>
+                        <div>${reply.submittedAt ? new Date(reply.submittedAt).toLocaleString() : '—'}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error(error);
+                listElement.innerHTML = '<p>Unable to load responses right now.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadReplies);
+    </script>
+</body>
+</html>

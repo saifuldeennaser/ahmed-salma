@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmed & Salma - Wedding Invitation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-crest">A & S</div>
+            <p class="splash-subtitle">Ahmed & Salma</p>
+            <div class="splash-loader">
+                <div class="splash-loader-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="envelope-wrapper">
+            <div class="invitation-text">
+                <p class="subtitle">A love letter from</p>
+                <h1>Ahmed & Salma</h1>
+            </div>
+            <div class="center-action" id="open-invitation" aria-hidden="false">
+                <div class="center-action-inner">
+                    <p>Open the invitation</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Desktop-only overlay prompting mobile view -->
+        <div class="desktop-overlay" aria-hidden="true">
+            <div class="desktop-overlay-inner">
+                <p>Open the invitation on mobile for better view</p>
+            </div>
+        </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
