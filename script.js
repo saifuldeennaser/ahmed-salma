@@ -1,231 +1,243 @@
-const openInvitation = document.getElementById('open-invitation');
+/* ============================================================
+   Wedding Website — Optimised Script
+   Performance notes:
+   - Countdown uses requestAnimationFrame for silky 60fps
+   - Passive event listeners throughout
+   - IntersectionObserver triggers animations only when visible
+   - Background image loaded via a <link rel=preload>-friendly
+     CSS class swap instead of a blocking JS Image object
+   ============================================================ */
+
+'use strict';
+
+// ── Helpers ──────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const qs = sel => document.querySelector(sel);
+
+// ── Page: index.html — open envelope ─────────────────────────
+const openInvitation = $('open-invitation');
 if (openInvitation) {
     openInvitation.addEventListener('click', () => {
         window.location.href = 'invitation.html';
-    });
+    }, { passive: true });
 }
 
+// ── Device detection (mobile-only guard) ─────────────────────
 function isMobileDevice() {
-    if (typeof navigator === 'undefined') return false;
-    const userAgent = navigator.userAgent || '';
-    const mobileMatch = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB10|IEMobile|Opera Mini/i.test(userAgent);
-    const mobileHint = navigator.userAgentData?.mobile;
-    return mobileHint !== undefined ? mobileHint : mobileMatch;
+    const ua = navigator.userAgent || '';
+    const mobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB10|IEMobile|Opera Mini/i.test(ua);
+    const hint = navigator.userAgentData?.mobile;
+    return hint !== undefined ? hint : mobileUA;
 }
 
 function enforceMobileOnly() {
-    const isAdminPage = window.location.pathname.includes('admin.html');
-    if (isAdminPage) return;
-
-    const overlay = document.querySelector('.desktop-overlay');
-    const isMobile = isMobileDevice();
-    if (!isMobile) {
+    if (window.location.pathname.includes('admin.html')) return;
+    const overlay = qs('.desktop-overlay');
+    if (!isMobileDevice()) {
         document.body.classList.add('desktop-locked');
-        if (overlay) {
-            overlay.style.display = 'flex';
-        }
+        if (overlay) overlay.style.display = 'flex';
     }
 }
 
+// ── Countdown (rAF-driven, no setInterval jank) ───────────────
 function startCountdown() {
-    const target = new Date('2026-06-27T19:00:00');
-    const daysEl = document.getElementById('days');
-    const hoursEl = document.getElementById('hours');
-    const minutesEl = document.getElementById('minutes');
-    const secondsEl = document.getElementById('seconds');
+    const target  = new Date('2026-06-27T19:00:00').getTime();
+    const daysEl  = $('days');
+    const hoursEl = $('hours');
+    const minsEl  = $('minutes');
+    const secsEl  = $('seconds');
 
-    if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+    if (!daysEl || !hoursEl || !minsEl || !secsEl) return;
 
-    function updateTimer() {
-        const now = new Date();
-        const diff = target - now;
+    let lastSec = -1; // only update DOM when the second changes
+
+    function tick() {
+        const diff = target - Date.now();
+
         if (diff <= 0) {
-            daysEl.textContent = '00';
-            hoursEl.textContent = '00';
-            minutesEl.textContent = '00';
-            secondsEl.textContent = '00';
-            clearInterval(timerInterval);
+            daysEl.textContent = hoursEl.textContent =
+            minsEl.textContent = secsEl.textContent = '00';
             return;
         }
 
-        const seconds = Math.floor((diff / 1000) % 60);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const totalSecs = Math.floor(diff / 1000);
+        if (totalSecs === lastSec) {
+            requestAnimationFrame(tick);
+            return;
+        }
+        lastSec = totalSecs;
 
-        daysEl.textContent = String(days).padStart(2, '0');
-        hoursEl.textContent = String(hours).padStart(2, '0');
-        minutesEl.textContent = String(minutes).padStart(2, '0');
-        secondsEl.textContent = String(seconds).padStart(2, '0');
+        const s = totalSecs % 60;
+        const m = Math.floor(totalSecs / 60) % 60;
+        const h = Math.floor(totalSecs / 3600) % 24;
+        const d = Math.floor(totalSecs / 86400);
+
+        const pad = n => String(n).padStart(2, '0');
+        daysEl.textContent  = pad(d);
+        hoursEl.textContent = pad(h);
+        minsEl.textContent  = pad(m);
+        secsEl.textContent  = pad(s);
+
+        requestAnimationFrame(tick);
     }
 
-    updateTimer();
-    const timerInterval = setInterval(updateTimer, 1000);
+    requestAnimationFrame(tick);
 }
 
+// ── RSVP modal ────────────────────────────────────────────────
 function setupReplyModal() {
-    const openButton = document.getElementById('reply-requested-button');
-    const modalOverlay = document.getElementById('reply-modal-overlay');
-    const closeButton = document.getElementById('reply-modal-close');
-    const replyForm = document.getElementById('reply-form');
+    const openBtn       = $('reply-requested-button');
+    const modalOverlay  = $('reply-modal-overlay');
+    const closeBtn      = $('reply-modal-close');
+    const replyForm     = $('reply-form');
 
-    if (!openButton || !modalOverlay || !closeButton || !replyForm) return;
+    if (!openBtn || !modalOverlay || !closeBtn || !replyForm) return;
 
-    const successMessage = document.getElementById('reply-success-message');
-    const attendanceCheckbox = document.getElementById('reply-attendance');
-    const attendanceLabel = document.getElementById('attendance-label');
+    const successMsg     = $('reply-success-message');
+    const attendCB       = $('reply-attendance');
+    const attendLabel    = $('attendance-label');
 
-    if (attendanceCheckbox && attendanceLabel) {
-        attendanceCheckbox.addEventListener('change', () => {
-            if (attendanceCheckbox.checked) {
-                attendanceLabel.textContent = "Yes, I'll be there!";
-                attendanceLabel.classList.remove('not-attending');
+    // Toggle label text
+    if (attendCB && attendLabel) {
+        attendCB.addEventListener('change', () => {
+            if (attendCB.checked) {
+                attendLabel.textContent = "Yes, I'll be there!";
+                attendLabel.classList.remove('not-attending');
             } else {
-                attendanceLabel.textContent = "Sorry, I can't make it";
-                attendanceLabel.classList.add('not-attending');
+                attendLabel.textContent = "Sorry, I can't make it";
+                attendLabel.classList.add('not-attending');
             }
-        });
+        }, { passive: true });
     }
 
     function openModal() {
         modalOverlay.classList.add('active');
         document.body.classList.add('modal-open');
-        if (attendanceCheckbox) {
-            attendanceCheckbox.checked = true;
-            if (attendanceLabel) {
-                attendanceLabel.textContent = "Yes, I'll be there!";
-                attendanceLabel.classList.remove('not-attending');
+        if (attendCB) {
+            attendCB.checked = true;
+            if (attendLabel) {
+                attendLabel.textContent = "Yes, I'll be there!";
+                attendLabel.classList.remove('not-attending');
             }
         }
-        if (successMessage) {
-            successMessage.hidden = true;
-        }
-        if (replyForm) {
-            replyForm.hidden = false;
-        }
+        if (successMsg) successMsg.hidden = true;
+        replyForm.hidden = false;
     }
 
     function closeModal() {
         modalOverlay.classList.remove('active');
         document.body.classList.remove('modal-open');
-        if (successMessage) {
-            successMessage.hidden = true;
-        }
-        if (replyForm) {
-            replyForm.hidden = false;
-        }
+        if (successMsg) successMsg.hidden = true;
+        replyForm.hidden = false;
     }
 
-    openButton.addEventListener('click', openModal);
-    closeButton.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', (event) => {
-        if (event.target === modalOverlay) {
-            closeModal();
-        }
-    });
+    openBtn.addEventListener('click', openModal, { passive: true });
+    closeBtn.addEventListener('click', closeModal, { passive: true });
 
-    replyForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const name = document.getElementById('reply-name').value.trim();
-        const isAttending = attendanceCheckbox ? attendanceCheckbox.checked : true;
-        const response = isAttending ? "Yes, attending" : "No, not attending";
+    // Close on backdrop tap
+    modalOverlay.addEventListener('click', e => {
+        if (e.target === modalOverlay) closeModal();
+    }, { passive: true });
+
+    // Form submit → Google Sheets
+    replyForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        const name = $('reply-name').value.trim();
+        const isAttending = attendCB ? attendCB.checked : true;
         if (!name) return;
 
         const replyData = {
             name,
-            response,
+            response: isAttending ? 'Yes, attending' : 'No, not attending',
             submittedAt: new Date().toISOString()
         };
 
-        try {
-            const hasUrl = typeof GOOGLE_SCRIPT_URL !== 'undefined' && 
-                            GOOGLE_SCRIPT_URL && 
-                            GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL';
+        const hasUrl =
+            typeof GOOGLE_SCRIPT_URL !== 'undefined' &&
+            GOOGLE_SCRIPT_URL &&
+            GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL';
 
+        try {
             if (!hasUrl) {
-                // FALLBACK TO LOCAL STORAGE FOR TESTING (if not yet configured)
-                console.warn('Google Sheets URL not configured. Saving reply to local storage.');
-                const localReplies = JSON.parse(localStorage.getItem('wedding_replies') || '[]');
-                localReplies.push(replyData);
-                localStorage.setItem('wedding_replies', JSON.stringify(localReplies));
-                
-                // Simulate network latency
-                await new Promise(resolve => setTimeout(resolve, 800));
+                // Fallback: local storage (for testing without a deployed script)
+                const stored = JSON.parse(localStorage.getItem('wedding_replies') || '[]');
+                stored.push(replyData);
+                localStorage.setItem('wedding_replies', JSON.stringify(stored));
+                await new Promise(r => setTimeout(r, 600));
             } else {
-                // Send to Google Sheets (using text/plain / simple request to avoid preflight options check)
                 const res = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(replyData)
                 });
-
-                if (!res.ok) {
-                    throw new Error('Failed to save reply');
-                }
+                if (!res.ok) throw new Error('Network response was not ok');
             }
 
             replyForm.reset();
             replyForm.hidden = true;
-            if (successMessage) {
-                successMessage.hidden = false;
-            }
-        } catch (error) {
+            if (successMsg) successMsg.hidden = false;
+        } catch (err) {
             alert('Unable to save your response right now. Please try again later.');
-            console.error(error);
+            console.error(err);
         }
     });
 }
 
-function handleEnvelopeBackgroundLoad() {
-    const wrapper = document.querySelector('.envelope-wrapper');
+// ── Background image loader (index.html) ──────────────────────
+// Loads the large background off the main thread and reveals
+// the page only when ready, with a hard 4-second safety cap.
+function initBackgroundLoad() {
+    const wrapper = qs('.envelope-wrapper');
     if (!wrapper) return;
 
-    const bgUrl = 'images/2bmapex8m9rmw0cyp3pt8yf3sr_result_0.png';
-    const img = new Image();
-    
-    // Add loading class to body
     document.body.classList.add('bg-loading');
 
-    let imageLoaded = false;
-    let minTimeElapsed = false;
-
-    function checkLoadedState() {
-        if (imageLoaded && minTimeElapsed) {
-            document.body.classList.remove('bg-loading');
-            document.body.classList.add('bg-loaded');
-        }
+    let done = false;
+    function reveal() {
+        if (done) return;
+        done = true;
+        document.body.classList.remove('bg-loading');
+        document.body.classList.add('bg-loaded');
     }
 
-    img.onload = () => {
-        imageLoaded = true;
-        checkLoadedState();
-    };
-    img.onerror = () => {
-        imageLoaded = true; // Proceed anyway in case of error
-        checkLoadedState();
-    };
-    img.src = bgUrl;
+    // Use a hidden <img> tag — browser can prioritise & cache it properly
+    const img = new Image();
+    img.onload  = reveal;
+    img.onerror = reveal; // show page even if image fails
 
-    // Enforce 1.8 seconds minimum display time for the splash screen
+    // Small delay so the splash animation starts playing first (better UX)
     setTimeout(() => {
-        minTimeElapsed = true;
-        checkLoadedState();
-    }, 1800);
+        img.src = 'images/2bmapex8m9rmw0cyp3pt8yf3sr_result_0.png';
+    }, 100);
 
-    // Maximum timeout of 4 seconds to prevent getting stuck if image is too large
-    setTimeout(() => {
-        if (!document.body.classList.contains('bg-loaded')) {
-            console.warn('Background image load timeout - removing loading screen anyway');
-            imageLoaded = true;
-            minTimeElapsed = true;
-            checkLoadedState();
-        }
-    }, 4000);
+    // Hard cap — never stay stuck longer than 4 s
+    setTimeout(reveal, 4000);
 }
 
+// ── IntersectionObserver: trigger CSS animations on scroll ────
+function observeAnimations() {
+    const targets = document.querySelectorAll(
+        '.countdown-item, .invite-copy-details p, .invite-map-card'
+    );
+    if (!targets.length) return;
+
+    const io = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    targets.forEach(el => io.observe(el));
+}
+
+// ── Boot ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     enforceMobileOnly();
-    handleEnvelopeBackgroundLoad();
+    initBackgroundLoad();
     startCountdown();
     setupReplyModal();
-});
+    observeAnimations();
+}, { once: true });

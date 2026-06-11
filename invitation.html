@@ -3,13 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ahmed & Salma - Invitation</title>
+    <meta name="theme-color" content="#4e1721">
+    <title>Ahmed &amp; Salma - Invitation</title>
+    <!-- Preconnect to font providers -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Load Allura (script font used heavily) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&display=swap">
+    <!-- Preconnect to Google Maps -->
+    <link rel="preconnect" href="https://maps.googleapis.com">
+    <link rel="preconnect" href="https://maps.gstatic.com" crossorigin>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="invite-page">
     <div class="invite-container">
         <div class="invite-image-wrapper">
-            <img src="images/441928f1053f4322a49a8645e5bef7c0-removebg-preview.png" alt="Invitation preview" class="invite-image">
+            <img src="images/441928f1053f4322a49a8645e5bef7c0-removebg-preview.png" alt="Invitation preview" class="invite-image" decoding="async" fetchpriority="high">
         </div>
         <div class="invite-copy-overlay">
             <p class="invite-copy-label">Meet us in</p>
@@ -38,7 +47,7 @@
             <br>
             <br>
             <div class="invite-footer-image-wrapper">
-                <img src="images/ChatGPT_Image_Jun_10__2026__02_50_03_PM-removebg-preview.png" alt="Invitation accent" class="invite-footer-image">
+                <img src="images/ChatGPT_Image_Jun_10__2026__02_50_03_PM-removebg-preview.png" alt="Invitation accent" class="invite-footer-image" loading="lazy" decoding="async">
                 <button class="invite-footer-caption" id="reply-requested-button">Your Reply Requested</button>
             </div>
         </div>
@@ -72,7 +81,7 @@
             <p>Please open this invitation on mobile for the best viewing experience.</p>
         </div>
     </div>
-    <script src="config.js"></script>
-    <script src="script.js"></script>
+    <script src="config.js" defer></script>
+    <script src="script.js" defer></script>
 </body>
 </html>
