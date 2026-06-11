@@ -41,21 +41,22 @@ body.bg-loaded .envelope-wrapper {
 
 .invitation-text {
     position: absolute;
-    top: 10rem;
+    top: clamp(6rem, 18vh, 12rem);
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
     color: #f7ece6;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
-    padding: 0 1rem;
+    padding: 0 clamp(0.75rem, 4vw, 2rem);
+    width: 94vw;
 }
 
 .invitation-text .subtitle {
     font-family: 'Georgia', serif;
-    font-size: 1rem;
-    letter-spacing: 0.35em;
+    font-size: clamp(0.75rem, 2.5vw, 1rem);
+    letter-spacing: clamp(0.2em, 1vw, 0.35em);
     text-transform: uppercase;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
     opacity: 0;
     transform: translateY(12px);
     animation: fadeUp 1.2s ease-out forwards;
@@ -68,8 +69,8 @@ body.bg-loaded .invitation-text .subtitle {
 
 .invitation-text h1 {
     font-family: 'Allura', 'Great Vibes', 'Palace Script MT', 'Brush Script MT', cursive;
-    font-size: clamp(3.2rem, 6vw, 5.2rem);
-    line-height: 0.8;
+    font-size: clamp(3rem, 13vw, 5.2rem);
+    line-height: 0.9;
     margin: 0;
     letter-spacing: 0.04em;
     opacity: 0;
@@ -88,20 +89,26 @@ body.bg-loaded .invitation-text h1 {
 /* Centered action below the flower (upgraded animations) */
 .center-action {
     position: absolute;
-    top: 87%;
+    bottom: clamp(3rem, 8vh, 6rem);
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     text-align: center;
     color: #f7ece6;
     opacity: 0;
     pointer-events: auto;
-    animation: fadeIn 1s cubic-bezier(.2,.8,.2,1) 0.9s forwards;
+    animation: fadeInBottom 1s cubic-bezier(.2,.8,.2,1) 0.9s forwards;
     will-change: opacity, transform;
     animation-play-state: paused;
+    white-space: nowrap;
 }
 
 body.bg-loaded .center-action {
     animation-play-state: running;
+}
+
+@keyframes fadeInBottom {
+    from { opacity: 0; transform: translateX(-50%) translateY(12px) scale(0.995); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
 }
 
 .center-action-inner {
@@ -137,8 +144,8 @@ body.bg-loaded .center-action {
 .center-action p {
     margin: 0;
     font-family: 'Georgia', serif;
-    font-size: 1.05rem;
-    letter-spacing: 0.35em;
+    font-size: clamp(0.75rem, 3vw, 1.05rem);
+    letter-spacing: clamp(0.2em, 1vw, 0.35em);
     text-transform: uppercase;
     color: #f7ece6;
     text-shadow: 0 1px 4px rgba(0,0,0,0.45);
@@ -150,8 +157,8 @@ body.bg-loaded .center-action {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translate(-50%, -50%) translateY(12px) scale(0.995); }
-    to { opacity: 1; transform: translate(-50%, -50%) translateY(0) scale(1); }
+    from { opacity: 0; transform: translateY(12px) scale(0.995); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes float {
@@ -202,61 +209,56 @@ body.bg-loaded .center-action {
     }
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    .envelope-wrapper {
-        height: 100vh;
-        width: 100%;
-    }
+/* =====================================================
+   RESPONSIVE DESIGN — Mobile-first fluid approach
+   clamp() handles all screen sizes automatically.
+   Breakpoints only for layout structural changes.
+   ===================================================== */
 
-    /* Make invitation text take more horizontal space on tablets */
+/* Very small phones (< 360px e.g. iPhone SE 1st gen) */
+@media (max-width: 359px) {
     .invitation-text {
-        top: 10rem;
-        width: 90vw;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 0 4vw;
+        top: clamp(4rem, 14vh, 8rem);
+        width: 98vw;
     }
-
     .invitation-text h1 {
-        font-size: clamp(3rem, 8.5vw, 5.2rem);
-        line-height: 0.95;
+        font-size: clamp(2.4rem, 14vw, 3.4rem);
+    }
+    .center-action-inner {
+        padding: 0.45rem 0.9rem;
     }
 }
 
-@media (max-width: 480px) {
-    .envelope-wrapper {
-        height: 100vh;
-        width: 100%;
-    }
-
-    /* Full-width centered layout for narrow mobile screens */
+/* Small phones (360px – 480px — most Android & iPhone SE 2) */
+@media (min-width: 360px) and (max-width: 480px) {
     .invitation-text {
-        position: absolute;
-        top: 22vh;
-        left: 50%;
-        transform: translateX(-50%);
+        top: clamp(5rem, 16vh, 10rem);
         width: 96vw;
-        padding: 0 2vw;
-        text-align: center;
     }
-
-    .invitation-text .subtitle {
-        font-size: 0.95rem;
-        letter-spacing: 0.3em;
-        margin-bottom: 0.5rem;
-        transform: translateY(8px);
-    }
-
     .invitation-text h1 {
-        font-size: 11.5vw;
-        line-height: 1;
-        letter-spacing: 0.02em;
-        margin: 0;
+        font-size: clamp(2.8rem, 13vw, 3.8rem);
     }
+}
 
-    .center-action {
-        top: 85%;
+/* Standard phones (480px – 600px — iPhone 14, Pixel) */
+@media (min-width: 480px) and (max-width: 600px) {
+    .invitation-text {
+        top: clamp(6rem, 18vh, 11rem);
+        width: 92vw;
+    }
+    .invitation-text h1 {
+        font-size: clamp(3rem, 11vw, 4.2rem);
+    }
+}
+
+/* Large phones / small tablets (600px – 768px) */
+@media (min-width: 600px) and (max-width: 768px) {
+    .invitation-text {
+        top: clamp(7rem, 18vh, 12rem);
+        width: 88vw;
+    }
+    .invitation-text h1 {
+        font-size: clamp(3.4rem, 9vw, 5rem);
     }
 }
 
@@ -333,8 +335,8 @@ body.bg-loaded .center-action {
 }
 
 @keyframes overlayFade {
-    from { opacity: 0; transform: translate(-50%, 18px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes detailFade {
@@ -369,17 +371,17 @@ body.bg-loaded .center-action {
 
 /* Invitation destination page styles */
 .invite-page {
-    min-height: 170vh;
+    min-height: 100vh;
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding-top: 4.5rem;
-    background: url('images/olga-thelavart-vS3idIiYxX0-unsplash.jpg') center/cover no-repeat;
+    padding: clamp(2rem, 6vh, 4.5rem) clamp(0.5rem, 3vw, 1.5rem) clamp(3rem, 8vh, 5rem);
+    background: url('images/olga-thelavart-vS3idIiYxX0-unsplash.jpg') center/cover no-repeat fixed;
     animation: pageReveal 1.1s ease-out forwards;
 }
 
 .invite-container {
-    width: min(92vw, 560px);
+    width: min(96vw, 560px);
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -404,26 +406,28 @@ body.bg-loaded .center-action {
 }
 
 .invite-copy-overlay {
-    position: absolute;
-    top: 90%;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0;
+    padding: clamp(0.5rem, 2vw, 1rem);
     color: #422c30;
     text-align: center;
-    max-width: 100%;
-    width: auto;
-    white-space: nowrap;
+    width: 100%;
+    max-width: min(96vw, 520px);
+    white-space: normal;
     opacity: 0;
+    margin-top: 0;
     animation: overlayFade 1.2s ease-out 0.5s forwards;
 }
 
 .invite-copy-title {
     animation: titleGlow 4s ease-in-out infinite 1.2s;
+    font-size: clamp(2.4rem, 10vw, 5rem) !important;
 }
 
 .invite-copy-details p {
@@ -729,9 +733,9 @@ body.modal-open .reply-modal-overlay {
 
 .invite-copy-title {
     margin: 0;
-    margin-top: 1.5rem;
+    margin-top: clamp(0.75rem, 2vh, 1.5rem);
     font-family: 'Allura', 'Great Vibes', 'Palace Script MT', cursive;
-    font-size: clamp(3.6rem, 8vw, 5rem);
+    font-size: clamp(2.4rem, 10vw, 5rem);
     line-height: 0.96;
     color: #4b2f35;
     text-align: center;
@@ -743,17 +747,18 @@ body.modal-open .reply-modal-overlay {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.35rem;
-    margin-top: 1rem;
+    gap: clamp(0.2rem, 1vh, 0.4rem);
+    margin-top: clamp(0.5rem, 2vh, 1rem);
+    padding: 0 clamp(0.5rem, 3vw, 1rem);
 }
 
 .invite-copy-details p {
     margin: 0;
     font-family: 'Georgia', serif;
-    font-size: 0.95rem;
+    font-size: clamp(0.78rem, 3vw, 0.95rem);
     line-height: 1.5;
     color: rgba(55, 30, 35, 0.92);
-    letter-spacing: 0.1em;
+    letter-spacing: clamp(0.05em, 0.5vw, 0.1em);
     text-transform: none;
 }
 
@@ -761,9 +766,9 @@ body.modal-open .reply-modal-overlay {
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    margin-top: 0.9rem;
-    width: min(92%, 520px);
-    gap: 0.8rem;
+    margin-top: clamp(0.5rem, 2vh, 0.9rem);
+    width: min(100%, 520px);
+    gap: clamp(0.4rem, 2vw, 0.8rem);
 }
 
 .countdown-item {
@@ -771,8 +776,9 @@ body.modal-open .reply-modal-overlay {
     flex-direction: column;
     align-items: center;
     gap: 0.2rem;
-    flex: none;
-    min-width: 52px;
+    flex: 1;
+    min-width: clamp(42px, 12vw, 60px);
+    max-width: 80px;
     opacity: 0;
     transform: translateY(12px) scale(0.96);
     animation: countdownItemFade 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
@@ -798,16 +804,16 @@ body.modal-open .reply-modal-overlay {
 .countdown-number {
     position: relative;
     font-family: 'Georgia', serif;
-    font-size: clamp(2.1rem, 6vw, 2.6rem);
-    letter-spacing: 0.26em;
+    font-size: clamp(1.6rem, 7vw, 2.6rem);
+    letter-spacing: clamp(0.1em, 1vw, 0.26em);
     color: #3f292d;
     line-height: 1;
 }
 
 .countdown-label {
     font-family: 'Georgia', serif;
-    font-size: 0.58rem;
-    letter-spacing: 0.64em;
+    font-size: clamp(0.45rem, 1.8vw, 0.58rem);
+    letter-spacing: clamp(0.2em, 2vw, 0.64em);
     text-transform: uppercase;
     color: rgba(55, 30, 35, 0.72);
 }
@@ -815,9 +821,9 @@ body.modal-open .reply-modal-overlay {
 .countdown-item:not(:last-child) .countdown-number::after {
     content: ':';
     position: absolute;
-    right: -1.5rem;
-    top: 0.4rem;
-    font-size: 1.5rem;
+    right: clamp(-1.2rem, -3.5vw, -0.8rem);
+    top: 0.3rem;
+    font-size: clamp(1rem, 4vw, 1.5rem);
     color: #4b2f35;
 }
 
@@ -848,7 +854,7 @@ body.modal-open .reply-modal-overlay {
 }
 
 .invite-image {
-    width: min(98vw, 720px);
+    width: min(100%, 720px);
     max-width: 100%;
     display: block;
     margin: 0 auto;
@@ -856,12 +862,12 @@ body.modal-open .reply-modal-overlay {
     animation: imageFloat 12s ease-in-out infinite;
 }
 .invite-map-card {
-    width: min(92vw, 430px);
-    border-radius: 35px;
+    width: min(100%, 430px);
+    border-radius: clamp(16px, 5vw, 35px);
     background: rgba(78, 23, 27, 0.96);
     box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-    padding: 0.9rem;
-    margin-top: 1rem;
+    padding: clamp(0.5rem, 2vw, 0.9rem);
+    margin-top: clamp(0.5rem, 2vh, 1rem);
     display: flex;
     justify-content: center;
 }
@@ -876,9 +882,9 @@ body.modal-open .reply-modal-overlay {
 .invite-map-embed {
     width: 100%;
     max-width: 100%;
-    height: 260px;
+    height: clamp(180px, 45vw, 260px);
     border: none;
-    border-radius: 22px;
+    border-radius: clamp(12px, 4vw, 22px);
 }
 
 .invite-footer-image-wrapper {
@@ -893,77 +899,53 @@ body.modal-open .reply-modal-overlay {
 }
 
 .invite-footer-image {
-    width: min(95vw, 420px);
+    width: min(100%, 420px);
     max-width: 100%;
     display: block;
     margin: 0 auto;
-    border-radius: 16px;
+    border-radius: clamp(8px, 3vw, 16px);
     overflow: hidden;
 }
 
-@media (max-width: 769px) {
-    .invite-page {
-        min-height: 150vh;
-        padding-top: 2rem;
-    }
+/* =====================================================
+   INVITATION PAGE — Fluid responsive (no fixed vh hacks)
+   ===================================================== */
 
-    .invite-copy-overlay {
-        top: 80%;
-        max-width: 92vw;
-        width: 100%;
-        padding: 0 1rem;
-        white-space: normal;
+/* Very small phones */
+@media (max-width: 359px) {
+    .reply-modal {
+        padding: 2rem 1rem 1.5rem;
     }
-
-    .invite-copy-title {
-        font-size: clamp(2.8rem, 9vw, 4.5rem);
+    .invite-footer-caption {
+        font-size: 0.6rem;
+        letter-spacing: 0.12em;
+        padding: 0.2rem 0.6rem;
     }
-
-    .invite-copy-details p {
-        font-size: 0.92rem;
-    }
-
-    .invite-countdown {
-        flex-wrap: wrap;
-        gap: 0.6rem;
-        width: 100%;
-    }
-
-    .countdown-item {
-        min-width: 48px;
-    }
-
-    .countdown-item:not(:last-child) .countdown-number::after {
-        right: -1rem;
-    }
-
-    .invite-map-embed {
-        height: 220px;
+    .invite-copy-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.25em;
     }
 }
 
-@media (max-width: 520px) {
-    .invite-copy-overlay {
-        top: 82%;
+/* Standard mobiles — tidy up modal and footer */
+@media (max-width: 480px) {
+    .reply-modal {
+        max-width: 100%;
+        border-radius: 24px 24px 0 0;
+        padding: 2.2rem 1.2rem 1.8rem;
     }
-
     .invite-footer-caption {
-        font-size: 0.68rem;
+        font-size: clamp(0.6rem, 2.5vw, 0.72rem);
+    }
+    .invite-copy-label {
+        font-size: clamp(0.75rem, 3vw, 0.95rem);
     }
 }
 
-@media (max-width: 380px) {
-    .invite-page {
-        min-height: 190vh;
-        padding-top: 2rem;
-    }
-    
-    .invite-copy-overlay {
-        top: 82%;
-    }
-
-    .invite-footer-caption {
-        font-size: 0.68rem;
+/* Tablets */
+@media (min-width: 600px) {
+    .invite-container {
+        width: min(88vw, 560px);
     }
 }
 

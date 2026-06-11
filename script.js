@@ -211,6 +211,16 @@ function handleEnvelopeBackgroundLoad() {
         minTimeElapsed = true;
         checkLoadedState();
     }, 1800);
+
+    // Maximum timeout of 4 seconds to prevent getting stuck if image is too large
+    setTimeout(() => {
+        if (!document.body.classList.contains('bg-loaded')) {
+            console.warn('Background image load timeout - removing loading screen anyway');
+            imageLoaded = true;
+            minTimeElapsed = true;
+            checkLoadedState();
+        }
+    }, 4000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
