@@ -14,102 +14,6 @@
 const $ = id => document.getElementById(id);
 const qs = sel => document.querySelector(sel);
 
-// ── i18n ─────────────────────────────────────────────────
-const TRANSLATIONS = {
-    en: {
-        'subtitle':    'A love letter from',
-        'open-btn':    'Open the invitation',
-        'copy-label':  'Meet us in',
-        'copy-title':  'Club House, Obour',
-        'detail-1':    'On Saturday, 27 June 2026',
-        'detail-2':    'Seven in the afternoon.',
-        'detail-3':    'Formal invitation to follow.',
-        'cd-days':     'Days',
-        'cd-hours':    'Hours',
-        'cd-minutes':  'Minutes',
-        'cd-seconds':  'Seconds',
-        'footer-btn':  'Your Reply Requested',
-        'modal-title': 'Reply Requested',
-        'modal-desc':  'Please let us know if you will be able to join the celebration. Your response is appreciated.',
-        'success-msg': 'Thank you! We got your response.',
-        'field-name':  'Name',
-        'name-ph':     'Your name',
-        'side-label':  'You are joining from',
-        'side-groom':  '🤵 Groom\'s Side',
-        'side-bride':  '👰 Bride\'s Side',
-        'attend-q':    'Will you attend?',
-        'attend-yes':  "Yes, I'll be there!",
-        'attend-no':   "Sorry, I can't make it",
-        'submit-btn':  'Send Reply',
-        'sending':     'Sending…',
-        'lang-switch': 'عربي',
-    },
-    ar: {
-        'subtitle':    'رسالة حب من',
-        'open-btn':    'افتح الدعوة',
-        'copy-label':  'موعدنا',
-        'copy-title':  'كلوب هاوس، العبور',
-        'detail-1':    'السبت، 27 يونيو 2026',
-        'detail-2':    'السابعة مساءً.',
-        'detail-3':    'دعوة رسمية ستصلكم قريباً.',
-        'cd-days':     'أيام',
-        'cd-hours':    'ساعات',
-        'cd-minutes':  'دقائق',
-        'cd-seconds':  'ثواني',
-        'footer-btn':  'نودّ معرفة ردّكم',
-        'modal-title': 'ردّ مطلوب',
-        'modal-desc':  'يُرجى إعلامنا إذا كنتم قادرين على حضور الاحتفال. نقدر ردّكم.',
-        'success-msg': 'شكراً! تلقينا ردّكم.',
-        'field-name':  'الاسم',
-        'name-ph':     'اسمك',
-        'side-label':  'أنت من جانب',
-        'side-groom':  '🤵 جانب العريس',
-        'side-bride':  '👰 جانب العروسة',
-        'attend-q':    'هل ستحضر؟',
-        'attend-yes':  'نعم، سأكون هناك!',
-        'attend-no':   'آسف، لن أستطيع الحضور',
-        'submit-btn':  'إرسال الرد',
-        'sending':     'جارٍ الإرسال…',
-        'lang-switch': 'English',
-    }
-};
-
-let currentLang = localStorage.getItem('wedding_lang') || 'en';
-
-function applyLanguage(lang) {
-    currentLang = lang;
-    localStorage.setItem('wedding_lang', lang);
-    const t = TRANSLATIONS[lang];
-    const isAr = lang === 'ar';
-
-    // Direction + lang attribute
-    document.documentElement.setAttribute('dir',  isAr ? 'rtl' : 'ltr');
-    document.documentElement.setAttribute('lang', lang);
-    document.documentElement.classList.toggle('lang-ar', isAr);
-
-    // Swap textContent for all tagged elements
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.dataset.i18n;
-        if (t[key] !== undefined) el.textContent = t[key];
-    });
-
-    // Swap placeholders
-    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-        const key = el.dataset.i18nPh;
-        if (t[key] !== undefined) el.placeholder = t[key];
-    });
-}
-
-function setupLanguage() {
-    const btn = $('lang-btn');
-    if (btn) {
-        btn.addEventListener('click', () => {
-            applyLanguage(currentLang === 'en' ? 'ar' : 'en');
-        }, { passive: true });
-    }
-    applyLanguage(currentLang);
-}
-
 // ── Page: index.html — open envelope ─────────────────────────
 const openInvitation = $('open-invitation');
 if (openInvitation) {
@@ -214,12 +118,11 @@ function setupReplyModal() {
     // Toggle label text
     if (attendCB && attendLabel) {
         attendCB.addEventListener('change', () => {
-            const t = TRANSLATIONS[currentLang];
             if (attendCB.checked) {
-                attendLabel.textContent = t['attend-yes'];
+                attendLabel.textContent = "Yes, I'll be there!";
                 attendLabel.classList.remove('not-attending');
             } else {
-                attendLabel.textContent = t['attend-no'];
+                attendLabel.textContent = "Sorry, I can't make it";
                 attendLabel.classList.add('not-attending');
             }
         }, { passive: true });
@@ -235,7 +138,7 @@ function setupReplyModal() {
         if (attendCB) {
             attendCB.checked = true;
             if (attendLabel) {
-                attendLabel.textContent = TRANSLATIONS[currentLang]['attend-yes'];
+                attendLabel.textContent = "Yes, I'll be there!";
                 attendLabel.classList.remove('not-attending');
             }
         }
@@ -269,7 +172,7 @@ function setupReplyModal() {
         const submitBtn = replyForm.querySelector('[type="submit"]');
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.textContent = TRANSLATIONS[currentLang]['sending'];
+            submitBtn.textContent = 'Sending…';
         }
 
         const replyData = {
@@ -307,7 +210,7 @@ function setupReplyModal() {
             // Re-enable button so the user can try again
             if (submitBtn) {
                 submitBtn.disabled = false;
-                submitBtn.textContent = TRANSLATIONS[currentLang]['submit-btn'];
+                submitBtn.textContent = 'Send Reply';
             }
             alert('Unable to save your response right now. Please try again later.');
             console.error(err);
@@ -387,10 +290,9 @@ function initBackgroundMusic() {
 // ── Boot ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     enforceMobileOnly();
-    setupLanguage();        // must run before other setup so text is correct
     initBackgroundLoad();
     startCountdown();
     setupReplyModal();
     observeAnimations();
-    initBackgroundMusic();
+    initBackgroundMusic(); // handles invitation.html (no splash screen)
 }, { once: true });
