@@ -1015,6 +1015,93 @@ body.modal-open .reply-modal-overlay {
     }
 }
 
+/* ── Language Toggle Button ──────────────────────────────── */
+.lang-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 9100;
+    padding: 0.38rem 1rem;
+    border-radius: 999px;
+    border: 1.5px solid rgba(78, 23, 27, 0.28);
+    background: rgba(255, 255, 255, 0.92);
+    color: #4e1721;
+    font-family: 'Cairo', 'Georgia', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 16px rgba(78, 23, 27, 0.13);
+    transition: background 0.22s ease, color 0.22s ease,
+                border-color 0.22s ease, box-shadow 0.22s ease,
+                transform 0.18s ease;
+    animation: langBtnIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s both;
+}
+
+.lang-btn:hover {
+    background: #4e1721;
+    color: #f7ece6;
+    border-color: #4e1721;
+    box-shadow: 0 8px 24px rgba(78, 23, 27, 0.28);
+    transform: translateY(-1px);
+}
+
+.lang-btn:active { transform: scale(0.96); }
+
+@keyframes langBtnIn {
+    from { opacity: 0; transform: translateY(-10px) scale(0.9); }
+    to   { opacity: 1; transform: translateY(0)     scale(1);   }
+}
+
+/* ── RTL / Arabic overrides ──────────────────────────────── */
+
+/* Flip lang button to top-left in RTL */
+html[dir="rtl"] .lang-btn {
+    right: auto;
+    left: 1rem;
+}
+
+/* Arabic font for all UI text */
+html.lang-ar body,
+html.lang-ar .reply-modal h2,
+html.lang-ar .reply-modal p,
+html.lang-ar .reply-field-label,
+html.lang-ar .toggle-title,
+html.lang-ar .attendance-label,
+html.lang-ar .reply-side-btn,
+html.lang-ar .reply-modal-action,
+html.lang-ar .reply-badge,
+html.lang-ar .invite-copy-label,
+html.lang-ar .invite-copy-details p,
+html.lang-ar .invite-footer-caption,
+html.lang-ar .countdown-label,
+html.lang-ar .reply-input,
+html.lang-ar .reply-success-message {
+    font-family: 'Cairo', sans-serif;
+}
+
+/* Move modal close button to left in RTL */
+html[dir="rtl"] .reply-modal-close {
+    right: auto;
+    left: 1.1rem;
+}
+
+/* Right-align form labels in RTL */
+html[dir="rtl"] .reply-field-label {
+    text-align: right;
+}
+
+html[dir="rtl"] .reply-input {
+    text-align: right;
+}
+
+/* Flip the attendance toggle area */
+html[dir="rtl"] .reply-toggle-container,
+html[dir="rtl"] .reply-side-container {
+    direction: rtl;
+}
+
 /* Splash Screen Styling */
 .splash-screen {
     position: fixed;

@@ -8,8 +8,8 @@
     <!-- Preconnect to font providers -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Load Allura (script font used heavily) -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&display=swap">
+    <!-- Load Allura + Cairo (Arabic support) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&family=Cairo:wght@400;600&display=swap">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,12 +27,12 @@
     <div class="container">
         <div class="envelope-wrapper">
             <div class="invitation-text">
-                <p class="subtitle">A love letter from</p>
+                <p class="subtitle" data-i18n="subtitle">A love letter from</p>
                 <h1>Ahmed & Salma</h1>
             </div>
             <div class="center-action" id="open-invitation" aria-hidden="false">
                 <div class="center-action-inner">
-                    <p>Open the invitation</p>
+                    <p data-i18n="open-btn">Open the invitation</p>
                 </div>
             </div>
         </div>
@@ -44,6 +44,9 @@
                 <p>Open the invitation on mobile for better view</p>
             </div>
         </div>
+
+    <!-- Language Toggle -->
+    <button class="lang-btn" id="lang-btn" aria-label="Toggle language" data-i18n="lang-switch">عربي</button>
 
     <!-- Background Music -->
     <audio id="bg-music" src="audio/mm.mp3" loop preload="auto"></audio>

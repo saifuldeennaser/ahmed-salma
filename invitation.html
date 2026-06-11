@@ -8,8 +8,8 @@
     <!-- Preconnect to font providers -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Load Allura (script font used heavily) -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&display=swap">
+    <!-- Load Allura + Cairo (Arabic support) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&family=Cairo:wght@400;600&display=swap">
     <!-- Preconnect to Google Maps -->
     <link rel="preconnect" href="https://maps.googleapis.com">
     <link rel="preconnect" href="https://maps.gstatic.com" crossorigin>
@@ -21,21 +21,21 @@
             <img src="images/441928f1053f4322a49a8645e5bef7c0-removebg-preview.png" alt="Invitation preview" class="invite-image" decoding="async" fetchpriority="high">
         </div>
         <div class="invite-copy-overlay">
-            <p class="invite-copy-label">Meet us in</p>
-            <h1 class="invite-copy-title">Club House, Obour</h1>
+            <p class="invite-copy-label" data-i18n="copy-label">Meet us in</p>
+            <h1 class="invite-copy-title" data-i18n="copy-title">Club House, Obour</h1>
             <br>
             <div class="invite-copy-details">
-                <p>On Saturday, 27 June 2026</p>
-                <p>Seven in the afternoon.</p>
-                <p>Formal invitation to follow.</p>
+                <p data-i18n="detail-1">On Saturday, 27 June 2026</p>
+                <p data-i18n="detail-2">Seven in the afternoon.</p>
+                <p data-i18n="detail-3">Formal invitation to follow.</p>
             </div>
             <br>
             <br>
             <div class="invite-countdown">
-                <div class="countdown-item"><span class="countdown-number" id="days">16</span><span class="countdown-label">Days</span></div>
-                <div class="countdown-item"><span class="countdown-number" id="hours">06</span><span class="countdown-label">Hours</span></div>
-                <div class="countdown-item"><span class="countdown-number" id="minutes">23</span><span class="countdown-label">Minutes</span></div>
-                <div class="countdown-item"><span class="countdown-number" id="seconds">43</span><span class="countdown-label">Seconds</span></div>
+                <div class="countdown-item"><span class="countdown-number" id="days">16</span><span class="countdown-label" data-i18n="cd-days">Days</span></div>
+                <div class="countdown-item"><span class="countdown-number" id="hours">06</span><span class="countdown-label" data-i18n="cd-hours">Hours</span></div>
+                <div class="countdown-item"><span class="countdown-number" id="minutes">23</span><span class="countdown-label" data-i18n="cd-minutes">Minutes</span></div>
+                <div class="countdown-item"><span class="countdown-number" id="seconds">43</span><span class="countdown-label" data-i18n="cd-seconds">Seconds</span></div>
             </div>
             <br>
             <br>
@@ -48,42 +48,42 @@
             <br>
             <div class="invite-footer-image-wrapper">
                 <img src="images/ChatGPT_Image_Jun_10__2026__02_50_03_PM-removebg-preview.png" alt="Invitation accent" class="invite-footer-image" loading="lazy" decoding="async">
-                <button class="invite-footer-caption" id="reply-requested-button">Your Reply Requested</button>
+                <button class="invite-footer-caption" id="reply-requested-button" data-i18n="footer-btn">Your Reply Requested</button>
             </div>
         </div>
     </div>
     <div class="reply-modal-overlay" id="reply-modal-overlay">
         <div class="reply-modal">
             <button class="reply-modal-close" id="reply-modal-close" aria-label="Close popup">×</button>
-            <h2>Reply Requested</h2>
-            <p>Please let us know if you will be able to join the celebration. Your response is appreciated.</p>
-            <div class="reply-success-message" id="reply-success-message" hidden>
+            <h2 data-i18n="modal-title">Reply Requested</h2>
+            <p data-i18n="modal-desc">Please let us know if you will be able to join the celebration. Your response is appreciated.</p>
+            <div class="reply-success-message" id="reply-success-message" hidden data-i18n="success-msg">
                 Thank you! We got your response.
             </div>
             <form id="reply-form">
-                <label class="reply-field-label">Name
-                    <input type="text" name="name" id="reply-name" required class="reply-input" placeholder="Your name">
+                <label class="reply-field-label"><span data-i18n="field-name">Name</span>
+                    <input type="text" name="name" id="reply-name" required class="reply-input" placeholder="Your name" data-i18n-ph="name-ph">
                 </label>
                 <div class="reply-side-container">
-                    <span class="toggle-title">You are joining from</span>
+                    <span class="toggle-title" data-i18n="side-label">You are joining from</span>
                     <div class="reply-side-buttons">
-                        <button type="button" class="reply-side-btn active" id="side-groom" data-side="groom">
+                        <button type="button" class="reply-side-btn active" id="side-groom" data-side="groom" data-i18n="side-groom">
                             🤵 Groom's Side
                         </button>
-                        <button type="button" class="reply-side-btn" id="side-bride" data-side="bride">
+                        <button type="button" class="reply-side-btn" id="side-bride" data-side="bride" data-i18n="side-bride">
                             👰 Bride's Side
                         </button>
                     </div>
                 </div>
                 <div class="reply-toggle-container">
-                    <span class="toggle-title">Will you attend?</span>
+                    <span class="toggle-title" data-i18n="attend-q">Will you attend?</span>
                     <label class="attendance-switch">
                         <input type="checkbox" id="reply-attendance" checked>
                         <span class="attendance-slider"></span>
                     </label>
-                    <span id="attendance-label" class="attendance-label">Yes, I'll be there!</span>
+                    <span id="attendance-label" class="attendance-label" data-i18n="attend-yes">Yes, I'll be there!</span>
                 </div>
-                <button class="reply-modal-action" type="submit">Send Reply</button>
+                <button class="reply-modal-action" type="submit" data-i18n="submit-btn">Send Reply</button>
             </form>
         </div>
     </div>
@@ -92,6 +92,9 @@
             <p>Please open this invitation on mobile for the best viewing experience.</p>
         </div>
     </div>
+    <!-- Language Toggle -->
+    <button class="lang-btn" id="lang-btn" aria-label="Toggle language" data-i18n="lang-switch">عربي</button>
+
     <!-- Background Music -->
     <audio id="bg-music" src="audio/mm.mp3" loop preload="auto"></audio>
 
